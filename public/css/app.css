@@ -4487,7 +4487,7 @@ p.typ.short {
   position: relative;
 }
 
-.notification-trigger > a.icon:after {
+.notification-trigger > a.icon.has-notifications:after {
   border-radius: 50%;
   height: 20px;
   line-height: 20px;
@@ -4504,6 +4504,7 @@ p.typ.short {
 }
 
 .notification-trigger .notifications {
+  line-height: normal;
   width: 300px;
   position: absolute;
   visibility: hidden;
@@ -4516,6 +4517,7 @@ p.typ.short {
 }
 
 .notification-trigger .notifications .container-header {
+  line-height: 50px;
   padding: 5px !important;
 }
 
@@ -4524,7 +4526,14 @@ p.typ.short {
   opacity: 1;
 }
 
+.notification-trigger .notifications .notification-wrap .older {
+  border-bottom: 1px solid #eaeaea;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 10px 15px;
+}
+
 .notification-trigger .notifications .notification-wrap .notification {
+  border-bottom: 1px solid #eaeaea;
   padding: 10px;
 }
 
@@ -4539,6 +4548,17 @@ p.typ.short {
 .notification-trigger .notifications .notification-wrap .notification.read {
   background: rgba(153, 143, 199, 0.1);
   color: rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 768px) {
+  .notification-trigger .notifications {
+    top: 0;
+    left: 0;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+  }
 }
 
 .search {

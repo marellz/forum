@@ -2,7 +2,7 @@
   position: relative;
   >a.icon{
     position: relative;
-    &:after{
+    &.has-notifications:after{
       $rad:20px;
       border-radius: 50%;
       height: $rad;
@@ -20,6 +20,7 @@
     }
   }
   .notifications{
+    line-height: normal;
     width: 300px;
     position: absolute;
     @include hide;
@@ -28,6 +29,7 @@
       height: 100px;
     }
     .container-header{
+      line-height: 50px;
       padding: 5px !important;
     }
 
@@ -36,7 +38,13 @@
     }
 
     .notification-wrap{
+      .older{
+        border-bottom: 1px solid #eaeaea;
+        background: rgba(black,.1);
+        padding: 10px 15px;;
+      }
       .notification{
+        border-bottom: 1px solid #eaeaea;
         padding: 10px;
         .typ{
           &.content{
@@ -53,5 +61,17 @@
       }
     }
   }
+}
 
+@include mobile-only(){
+  .notification-trigger{
+    .notifications{
+      top: 0;
+      left: 0;
+      height: 100%;
+      position: fixed;
+      width: 100%;
+      z-index: 100;
+    }
+  }
 }

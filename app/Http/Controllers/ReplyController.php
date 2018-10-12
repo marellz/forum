@@ -7,6 +7,7 @@ use App\Reply;
 use App\Thread;
 use App\User;
 use App\Like;
+use App\Notify;
 
 use Auth;
 
@@ -34,9 +35,22 @@ class ReplyController extends Controller
       $reply->isOwner = Auth::check() && $reply->user->email == Auth::user()->email;
       $reply->timing = $reply->created_at->diffForHumans();
 
+      //notify
+      $notify_code = str_random(15);
+      $thread_creator = Thread::where('code',$code)->first()->user;
+      $notification_source = $reply->user->id;
+      if($thread_creator != $notification_source){
+        Notify::create([
+          'code'=>$notify_code,
+          'type'=>'reply',
+          'thread'=>$code,
+          'from'=>$notification_source,
+          'to'=>$thread_creator,
+          'url'=>route('view-thread',['code'=>$code]),
+          'read'=>false,
+        ]);
+      }
       return response()->json(['success'=>true,'reply'=>$reply]);
-
-      // return redirect()->back()->with('message','Reply added.');
     }
 
     public function delete(Request $request,$code)

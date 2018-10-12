@@ -14153,7 +14153,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -14295,6 +14295,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ThreadView',
@@ -14316,7 +14319,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return this.auth;
     },
     canReply: function canReply() {
-      return this.replies.length < 1 && this.thread.isOwner;
+      return !(this.replies.length < 1 && this.thread.isOwner);
     }
   },
   methods: {
@@ -14355,7 +14358,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       console.log('saving');
       axios.post('/thread/view/' + this.code + '/comment', { reply: this.reply }).then(function (res) {
         if (res.data.success) {
-          this.replies.unshift(res.data.reply);
+          this.replies.push(res.data.reply);
           this.reply = '';
         }
       }.bind(this)).catch(function (err) {
@@ -14449,24 +14452,37 @@ var render = function() {
                     _c("div", { staticClass: "pd-xs-v" }, [
                       _c("p", { staticClass: "typ" }, [
                         _vm._v(
-                          "\n            " +
+                          "\n              " +
                             _vm._s(_vm.thread.content) +
-                            "\n          "
+                            "\n            "
                         )
                       ])
                     ])
                   ])
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "replies" }, [
-                  _vm.replies.length
-                    ? _c("h1", { staticClass: "icon ion-md-undo typ s" }, [
-                        _vm._v("Replies")
-                      ])
-                    : _c("h1", { staticClass: "typ s pd-xs c" }, [
-                        _vm._v("No replies. Be the first to make one.")
-                      ])
-                ]),
+                _c(
+                  "div",
+                  { staticClass: "replies" },
+                  [
+                    _vm.replies.length
+                      ? _c("h1", { staticClass: "icon ion-md-undo typ s" }, [
+                          _vm._v("Replies")
+                        ])
+                      : [
+                          _vm.thread.isOwner
+                            ? _c("h1", { staticClass: "typ s pd-xs c" }, [
+                                _vm._v(
+                                  "There are no replies to this thread yet."
+                                )
+                              ])
+                            : _c("h1", { staticClass: "typ s pd-xs c" }, [
+                                _vm._v("No replies. Be the first to make one.")
+                              ])
+                        ]
+                  ],
+                  2
+                ),
                 _vm._v(" "),
                 _vm._l(_vm.replies, function(reply, index) {
                   return _c(
@@ -14495,9 +14511,9 @@ var render = function() {
                         _c("div", { staticClass: "pd-xs-v" }, [
                           _c("p", { staticClass: "typ" }, [
                             _vm._v(
-                              "\n            " +
+                              "\n              " +
                                 _vm._s(reply.content) +
-                                "\n          "
+                                "\n            "
                             )
                           ])
                         ]),
@@ -14562,51 +14578,58 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _vm.hasAuth
-                  ? _c("div", { staticClass: "section thread-reply" }, [
-                      _c("div", { staticClass: "pd-xs" }),
-                      _vm._v(" "),
-                      _c(
-                        "form",
-                        {
-                          attrs: { method: "post" },
-                          on: {
-                            submit: function($event) {
-                              $event.preventDefault()
-                              return _vm.saveReply($event)
-                            }
-                          }
-                        },
-                        [
-                          _c("div", { staticClass: "input textarea" }, [
-                            _c("textarea", {
-                              directives: [
+                  ? _c(
+                      "div",
+                      { staticClass: "section thread-reply" },
+                      [
+                        _vm.canReply
+                          ? [
+                              _c(
+                                "form",
                                 {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.reply,
-                                  expression: "reply"
-                                }
-                              ],
-                              attrs: {
-                                required: "",
-                                placeholder: "Write your reply here"
-                              },
-                              domProps: { value: _vm.reply },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
+                                  attrs: { method: "post" },
+                                  on: {
+                                    submit: function($event) {
+                                      $event.preventDefault()
+                                      return _vm.saveReply($event)
+                                    }
                                   }
-                                  _vm.reply = $event.target.value
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _vm._m(0)
-                        ]
-                      )
-                    ])
+                                },
+                                [
+                                  _c("div", { staticClass: "input textarea" }, [
+                                    _c("textarea", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.reply,
+                                          expression: "reply"
+                                        }
+                                      ],
+                                      attrs: {
+                                        required: "",
+                                        placeholder: "Write your reply here"
+                                      },
+                                      domProps: { value: _vm.reply },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.reply = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._m(0)
+                                ]
+                              )
+                            ]
+                          : _vm._e()
+                      ],
+                      2
+                    )
                   : _c("div", { staticClass: "section thread-reply no-auth" }, [
                       _vm._m(1)
                     ])
@@ -14943,10 +14966,6 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(59)
-}
 var normalizeComponent = __webpack_require__(5)
 /* script */
 var __vue_script__ = __webpack_require__(61)
@@ -14955,7 +14974,7 @@ var __vue_template__ = __webpack_require__(62)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -14990,51 +15009,29 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(60);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(4)("2ebafb4e", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5db11841\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Notifications.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5db11841\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Notifications.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 59 */,
+/* 60 */,
 /* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -15070,18 +15067,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       active: false,
-      notifications: [{
-        read: false,
-        timing: '2 days ago',
-        content: 'I said something about you'
-      }, {
-        read: true,
-        timing: '2 days ago',
-        content: 'I said something about you'
-      }]
+      notifications: []
     };
   },
-  mounted: function mounted() {}
+
+  computed: {
+    unread: function unread() {
+      return this.notifications.filter(function (notif) {
+        return !notif.read;
+      });
+    },
+    read: function read() {
+      return this.notifications.filter(function (notif) {
+        return notif.read;
+      });
+    }
+  },
+  methods: {
+    fetchNotifications: function fetchNotifications() {
+      axios.get('/notifications/fetch').then(function (res) {
+        if (res.data.success) {
+          this.notifications = res.data.notifications;
+        }
+      }.bind(this)).catch(function (err) {
+        console.error(err);
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.fetchNotifications();
+    setInterval(this.fetchNotifications, 60000);
+  }
 });
 
 /***/ }),
@@ -15092,77 +15108,117 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "li",
-    {
-      staticClass: "notification-trigger",
+  return _c("li", { staticClass: "notification-trigger" }, [
+    _c("a", {
+      staticClass: "icon ion-md-notifications-outline",
+      class: { "has-notifications": _vm.unread.length },
+      attrs: { "data-notifications": _vm.unread.length },
       on: {
         click: function($event) {
           _vm.active = !_vm.active
         }
       }
-    },
-    [
-      _c("a", {
-        staticClass: "icon ion-md-notifications-outline",
-        attrs: { "data-notifications": _vm.notifications.length }
-      }),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "notifications container",
-          class: { active: _vm.active }
-        },
-        [
-          _vm._m(0),
+    }),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "notifications container", class: { active: _vm.active } },
+      [
+        _c("div", { staticClass: "container-header" }, [
+          _c("h1", { staticClass: "typ s title" }, [_vm._v("Notifications")]),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "container-content" },
-            _vm._l(_vm.notifications, function(notification, index) {
-              return _vm.notifications.length
-                ? _c("div", { staticClass: "notification-wrap" }, [
-                    _c(
+          _c("div", { staticClass: "container-header-actions" }, [
+            _c("a", {
+              staticClass: "txt icon ion-md-close-circle",
+              on: {
+                click: function($event) {
+                  _vm.active = false
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "container-content" }, [
+          _vm.notifications.length
+            ? _c(
+                "div",
+                { staticClass: "notification-wrap" },
+                [
+                  _vm._l(_vm.unread, function(notification, index) {
+                    return _c(
                       "a",
                       {
                         staticClass: "notification",
-                        class: { read: notification.read }
+                        class: { read: notification.read },
+                        attrs: {
+                          href: "/notifications/action/" + notification.code
+                        }
                       },
                       [
-                        _c("span", { staticClass: "typ n content" }, [
-                          _vm._v(_vm._s(notification.content))
-                        ]),
+                        _c("span", {
+                          staticClass: "typ n content",
+                          domProps: { innerHTML: _vm._s(notification.content) }
+                        }),
                         _vm._v(" "),
-                        _c("span", { staticClass: "typ s it time" }, [
+                        _c("span", { staticClass: "typ xs it time" }, [
                           _vm._v(_vm._s(notification.timing))
                         ])
                       ]
                     )
-                  ])
-                : _c("div", { staticClass: "align no-notifications" }, [
-                    _c("h1", { staticClass: "typ c s" }, [
-                      _vm._v("No new notifications")
-                    ])
-                  ])
-            })
-          )
-        ]
-      )
-    ]
-  )
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _vm._l(_vm.read, function(notification, index) {
+                        return _c(
+                          "a",
+                          {
+                            staticClass: "notification read",
+                            attrs: {
+                              href: "/notifications/action/" + notification.code
+                            }
+                          },
+                          [
+                            _c("span", {
+                              staticClass: "typ n content",
+                              domProps: {
+                                innerHTML: _vm._s(notification.content)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("span", { staticClass: "typ xs it time" }, [
+                              _vm._v(_vm._s(notification.timing))
+                            ])
+                          ]
+                        )
+                      })
+                    ],
+                    2
+                  )
+                ],
+                2
+              )
+            : _c("div", { staticClass: "align no-notifications" }, [
+                _c("h1", { staticClass: "typ c s" }, [
+                  _vm._v("No new notifications")
+                ])
+              ])
+        ])
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-header" }, [
-      _c("h1", { staticClass: "typ s" }, [_vm._v("Notifications")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "container-header-actions" }, [
-        _c("a", { staticClass: "txt icon ion-md-close-circle" })
-      ])
+    return _c("div", { staticClass: "pd-xs older" }, [
+      _c("h1", { staticClass: "typ s thick uc" }, [_vm._v("Older")])
     ])
   }
 ]

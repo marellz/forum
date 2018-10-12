@@ -34,6 +34,13 @@ Route::post('/like/{code}','LikeController@like')->name('like-item');
 //delete
 Route::post('/delete-reply/{code}','ReplyController@delete')->name('delete-reply');
 
+//notifications
+Route::prefix('notifications')->group(function(){
+  Route::get('/fetch','NotifyController@fetch')->name('fetch-notifications');
+  // Route::get('/test','NotifyController@fetch');
+  Route::get('/action/{code}','NotifyController@action')->name('notification-action');
+});
+
 // AUTH
 Route::get('/login',function(){
   return view('auth.login');

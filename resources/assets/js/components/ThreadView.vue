@@ -1,14 +1,14 @@
 <template lang="html">
   <div class="container">
     <template v-if="!doesNotExist">
-    <div class="container-header accent">
-      <h1 class="typ title">{{thread.title}}</h1>
-      <div class="container-header-actions">
-        <a
-        @click="likeThread(thread.code)"
-        class="icon txt n"
-        :class="thread.liked ? 'ion-md-heart' : 'ion-md-heart-empty'">
-        <span class="txt">{{thread.likes}}</span>
+      <div class="container-header accent">
+        <h1 class="typ title">{{thread.title}}</h1>
+        <div class="container-header-actions">
+          <a
+          @click="likeThread(thread.code)"
+          class="icon txt n"
+          :class="thread.liked ? 'ion-md-heart' : 'ion-md-heart-empty'">
+          <span class="txt">{{thread.likes}}</span>
         </a>
       </div>
     </div>
@@ -38,7 +38,10 @@
         <!-- if replies > 0 -->
         <h1 v-if="replies.length" class="icon ion-md-undo typ s">Replies</h1>
         <!-- else -->
-        <h1 v-else class="typ s pd-xs c">No replies. Be the first to make one.</h1>
+        <template v-else>
+          <h1 class="typ s pd-xs c" v-if="thread.isOwner">There are no replies to this thread yet.</h1>
+          <h1 class="typ s pd-xs c" v-else>No replies. Be the first to make one.</h1>
+        </template>
       </div>
 
       <!-- other replies -->
@@ -66,16 +69,16 @@
 
       <!-- reply form -->
       <div class="section thread-reply" v-if="hasAuth">
-        <div class="pd-xs">
-        </div>
-        <form  method="post" @submit.prevent="saveReply">
-          <div class="input textarea">
-            <textarea required v-model="reply" placeholder="Write your reply here"></textarea>
-          </div>
-          <div class="">
-            <button>Reply</button>
-          </div>
-        </form>
+        <template v-if="canReply">
+          <form  method="post" @submit.prevent="saveReply">
+            <div class="input textarea">
+              <textarea required v-model="reply" placeholder="Write your reply here"></textarea>
+            </div>
+            <div class="">
+              <button>Reply</button>
+            </div>
+          </form>
+        </template>
       </div>
       <div class="section thread-reply no-auth" v-else>
         <div class="pd">
@@ -83,16 +86,16 @@
         </div>
       </div>
     </div>
-    </template>
-    <template v-else>
-      <div class="pd-l">
-        <h1 class="typ thin">We have a problem.</h1>
-        <p class="typ">
-          This thread does not exist.
-        </p>
-      </div>
-    </template>
-  </div>
+  </template>
+  <template v-else>
+    <div class="pd-l">
+      <h1 class="typ thin">We have a problem.</h1>
+      <p class="typ">
+        This thread does not exist.
+      </p>
+    </div>
+  </template>
+</div>
 
 </template>
 
@@ -116,7 +119,7 @@ export default {
       return this.auth;
     },
     canReply(){
-      return this.replies.length < 1 && this.thread.isOwner
+      return !(this.replies.length < 1 && this.thread.isOwner)
     }
   },
   methods:{
@@ -158,38 +161,38 @@ export default {
       console.log('saving');
       axios.post(
         '/thread/view/'+this.code+'/comment',
-      {reply:this.reply})
-      .then(function(res) {
-        if(res.data.success){
-          this.replies.unshift(res.data.reply)
-          this.reply=''
+        {reply:this.reply})
+        .then(function(res) {
+          if(res.data.success){
+            this.replies.push(res.data.reply)
+            this.reply=''
+          }
+        }.bind(this))
+        .catch(function (err) {
+          console.error(err)
+        })
+      }
+    },
+    mounted(){
+      //get thread
+      axios.get('/thread/fetch/'+this.code)
+      .then(function (res) {
+        if(res.data.error){
+          this.doesNotExist = true
+          return false
+        }
+        if(res.data.thread.id){
+          this.thread = res.data.thread
+          this.replies = res.data.replies
         }
       }.bind(this))
       .catch(function (err) {
         console.error(err)
       })
+
     }
-  },
-  mounted(){
-    //get thread
-    axios.get('/thread/fetch/'+this.code)
-    .then(function (res) {
-      if(res.data.error){
-        this.doesNotExist = true
-        return false
-      }
-      if(res.data.thread.id){
-        this.thread = res.data.thread
-        this.replies = res.data.replies
-      }
-    }.bind(this))
-    .catch(function (err) {
-      console.error(err)
-    })
-
   }
-}
-</script>
+  </script>
 
-<style lang="css">
-</style>
+  <style lang="css">
+  </style>
