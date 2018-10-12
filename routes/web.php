@@ -25,6 +25,7 @@ Route::prefix('thread')->group(function() {
 
   // comment
   Route::post('view/{code}/comment','ReplyController@create')->name('new-reply');
+  Route::post('follow/{code}','ThreadController@follow')->name('follow-thread');
 
 });
 
@@ -39,6 +40,7 @@ Route::prefix('notifications')->group(function(){
   Route::get('/fetch','NotifyController@fetch')->name('fetch-notifications');
   Route::get('/action/{code}','NotifyController@action')->name('notification-action');
   Route::post('/action/{code}/delete','NotifyController@delete')->name('notification-action');
+  Route::post('/action/{code}/markAsRead','NotifyController@markAsRead')->name('notification-read');
 });
 
 // AUTH

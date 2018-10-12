@@ -58,6 +58,12 @@ class NotifyController extends Controller
 
     }
 
+
+    public function markAsRead($code){
+      Notify::where('code',$code)->update(['read'=>true]);
+      return response()->json(['success'=>true]);
+    }
+
     public function delete($code)
     {
       Notify::where('code',$code)->delete();
