@@ -37,8 +37,8 @@ Route::post('/delete-reply/{code}','ReplyController@delete')->name('delete-reply
 //notifications
 Route::prefix('notifications')->group(function(){
   Route::get('/fetch','NotifyController@fetch')->name('fetch-notifications');
-  // Route::get('/test','NotifyController@fetch');
   Route::get('/action/{code}','NotifyController@action')->name('notification-action');
+  Route::post('/action/{code}/delete','NotifyController@delete')->name('notification-action');
 });
 
 // AUTH

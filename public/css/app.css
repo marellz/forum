@@ -4503,61 +4503,126 @@ p.typ.short {
   color: white;
 }
 
-.notification-trigger .notifications {
-  line-height: normal;
-  width: 300px;
-  position: absolute;
+.notification-trigger .notifications-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
   visibility: hidden;
   opacity: 0;
+  z-index: 1000;
+  -webkit-transition: all .2s ease .2s;
+  transition: all .2s ease .2s;
+}
+
+.notification-trigger .notifications-wrap .notifications {
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  line-height: normal;
+  position: absolute;
   right: 0;
+  top: 0;
+  height: 100%;
+  width: 350px;
+  background: white;
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
 }
 
-.notification-trigger .notifications .no-notifications {
-  height: 100px;
-}
-
-.notification-trigger .notifications .container-header {
-  line-height: 50px;
-  padding: 5px !important;
-}
-
-.notification-trigger .notifications.active {
-  visibility: visible;
-  opacity: 1;
-}
-
-.notification-trigger .notifications .notification-wrap .older {
+.notification-trigger .notifications-wrap .notifications .notifs-head {
+  line-height: 4em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border-bottom: 1px solid #eaeaea;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 10px 15px;
 }
 
-.notification-trigger .notifications .notification-wrap .notification {
+.notification-trigger .notifications-wrap .notifications .notifs-head .close {
+  width: 4em;
+}
+
+.notification-trigger .notifications-wrap .notifications .notifs-content {
+  -webkit-box-flex: 1 1 auto;
+      -ms-flex-positive: 1 1 auto;
+          flex-grow: 1 1 auto;
+  overflow: auto;
+}
+
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification {
   border-bottom: 1px solid #eaeaea;
   padding: 10px;
+  position: relative;
+  overflow: auto;
+  overflow-x: hidden;
 }
 
-.notification-trigger .notifications .notification-wrap .notification .typ.content {
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification .typ.content {
   line-height: 30px;
 }
 
-.notification-trigger .notifications .notification-wrap .notification .typ.time {
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification .typ.time {
   line-height: 20px;
 }
 
-.notification-trigger .notifications .notification-wrap .notification.read {
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification.read {
   background: rgba(153, 143, 199, 0.1);
   color: rgba(0, 0, 0, 0.5);
 }
 
-@media screen and (max-width: 768px) {
-  .notification-trigger .notifications {
-    top: 0;
-    left: 0;
-    height: 100%;
-    position: fixed;
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification .icon.delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  line-height: 5em;
+  width: 4em;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+}
+
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification .icon.delete:hover {
+  color: #f55d3e;
+}
+
+.notification-trigger .notifications-wrap .notifications .notifs-content .notification:hover .icon.delete {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+}
+
+.notification-trigger .notifications-wrap.is-active {
+  -webkit-transition-delay: 0s;
+          transition-delay: 0s;
+  visibility: visible;
+  opacity: 1;
+}
+
+.notification-trigger .notifications-wrap.is-active .notifications {
+  -webkit-transition-delay: 0.2s;
+          transition-delay: 0.2s;
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+}
+
+@media screen and (max-width: 480px) {
+  .notification-trigger .notifications-wrap .notifications {
     width: 100%;
-    z-index: 100;
   }
 }
 

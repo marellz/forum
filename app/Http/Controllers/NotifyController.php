@@ -57,4 +57,10 @@ class NotifyController extends Controller
       return redirect()->route('view-thread',['code'=>$notification->thread]);
 
     }
+
+    public function delete($code)
+    {
+      Notify::where('code',$code)->delete();
+      return response()->json(['success'=>true]);
+    }
 }

@@ -15061,6 +15061,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Notifications',
@@ -15084,6 +15086,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
+    deleteNotification: function deleteNotification(code) {
+      axios.post('/notifications/action/' + code + '/delete').then(function (res) {
+        if (res.data.success) {
+          this.notifications.splice(this.notifications.findIndex(function (notif) {
+            notif.code == code;
+          }.bind(this)), 1);
+        }
+      }.bind(this)).catch(function (err) {
+        console.error(err);
+      });
+    },
     fetchNotifications: function fetchNotifications() {
       axios.get('/notifications/fetch').then(function (res) {
         if (res.data.success) {
@@ -15122,91 +15135,120 @@ var render = function() {
     _vm._v(" "),
     _c(
       "div",
-      { staticClass: "notifications container", class: { active: _vm.active } },
+      { staticClass: "notifications-wrap", class: { "is-active": _vm.active } },
       [
-        _c("div", { staticClass: "container-header" }, [
-          _c("h1", { staticClass: "typ s title" }, [_vm._v("Notifications")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "container-header-actions" }, [
-            _c("a", {
-              staticClass: "txt icon ion-md-close-circle",
+        _c("div", { staticClass: "notifications" }, [
+          _c("div", { staticClass: "notifs-head" }, [
+            _c("i", {
+              staticClass: "icon close ion-md-arrow-forward",
               on: {
                 click: function($event) {
                   _vm.active = false
                 }
               }
-            })
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "container-content" }, [
-          _vm.notifications.length
-            ? _c(
-                "div",
-                { staticClass: "notification-wrap" },
-                [
-                  _vm._l(_vm.unread, function(notification, index) {
-                    return _c(
-                      "a",
-                      {
-                        staticClass: "notification",
-                        class: { read: notification.read },
-                        attrs: {
-                          href: "/notifications/action/" + notification.code
-                        }
-                      },
-                      [
-                        _c("span", {
-                          staticClass: "typ n content",
-                          domProps: { innerHTML: _vm._s(notification.content) }
-                        }),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "typ xs it time" }, [
-                          _vm._v(_vm._s(notification.timing))
-                        ])
-                      ]
-                    )
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    [
-                      _vm._m(0),
-                      _vm._v(" "),
-                      _vm._l(_vm.read, function(notification, index) {
-                        return _c(
-                          "a",
-                          {
-                            staticClass: "notification read",
-                            attrs: {
-                              href: "/notifications/action/" + notification.code
+            }),
+            _vm._v(" "),
+            _c("h1", { staticClass: "typ n" }, [_vm._v("Notifications")])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "notifs-content" }, [
+            _vm.notifications.length
+              ? _c(
+                  "div",
+                  { staticClass: "notification-wrap" },
+                  [
+                    _vm._l(_vm.unread, function(notification, index) {
+                      return _c(
+                        "a",
+                        {
+                          staticClass: "notification",
+                          class: { read: notification.read },
+                          attrs: {
+                            href: "/notifications/action/" + notification.code
+                          }
+                        },
+                        [
+                          _c("span", {
+                            staticClass: "typ n content",
+                            domProps: {
+                              innerHTML: _vm._s(notification.content)
                             }
-                          },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "typ xs it time" }, [
+                            _vm._v(_vm._s(notification.timing))
+                          ])
+                        ]
+                      )
+                    }),
+                    _vm._v(" "),
+                    _vm.read.length
+                      ? _c(
+                          "div",
                           [
-                            _c("span", {
-                              staticClass: "typ n content",
-                              domProps: {
-                                innerHTML: _vm._s(notification.content)
-                              }
-                            }),
+                            _vm._m(0),
                             _vm._v(" "),
-                            _c("span", { staticClass: "typ xs it time" }, [
-                              _vm._v(_vm._s(notification.timing))
-                            ])
-                          ]
+                            _vm._l(_vm.read, function(notification, index) {
+                              return _c(
+                                "div",
+                                {
+                                  key: index,
+                                  staticClass: "notification read"
+                                },
+                                [
+                                  _c(
+                                    "a",
+                                    {
+                                      attrs: {
+                                        href:
+                                          "/notifications/action/" +
+                                          notification.code
+                                      }
+                                    },
+                                    [
+                                      _c("span", {
+                                        staticClass: "typ n content",
+                                        domProps: {
+                                          innerHTML: _vm._s(
+                                            notification.content
+                                          )
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "span",
+                                        { staticClass: "typ xs it time" },
+                                        [_vm._v(_vm._s(notification.timing))]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("a", {
+                                    staticClass: "icon delete ion-md-trash",
+                                    on: {
+                                      click: function($event) {
+                                        _vm.deleteNotification(
+                                          notification.code
+                                        )
+                                      }
+                                    }
+                                  })
+                                ]
+                              )
+                            })
+                          ],
+                          2
                         )
-                      })
-                    ],
-                    2
-                  )
-                ],
-                2
-              )
-            : _c("div", { staticClass: "align no-notifications" }, [
-                _c("h1", { staticClass: "typ c s" }, [
-                  _vm._v("No new notifications")
+                      : _vm._e()
+                  ],
+                  2
+                )
+              : _c("div", { staticClass: "align no-notifications pd-v" }, [
+                  _c("h1", { staticClass: "typ c icon ion-md-done-all" }, [
+                    _vm._v("No notifications")
+                  ])
                 ])
-              ])
+          ])
         ])
       ]
     )
