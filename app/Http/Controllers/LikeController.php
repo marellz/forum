@@ -18,13 +18,13 @@ class LikeController extends Controller
   public function like($code)
   {
     $user = Auth::user();
-    $user_likes = Like::where('item',$code)->where('user',$user->email);
+    $user_likes = Like::where('item',$code)->where('user',$user->id);
     if(!$user_likes->first()){
       //create
       $like_code = str_random(10);
       Like::create([
         'code'=>$like_code,
-        'user'=>$user->email,
+        'user'=>$user->id,
         'item'=>$code,
       ]);
       return response()->json(['liked'=>true]);

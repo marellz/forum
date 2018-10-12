@@ -23,14 +23,14 @@ class ReplyController extends Controller
       $reply_code = str_random(12);
       $reply = Reply::create([
         'code'=>$reply_code,
-        'user'=>Auth::user()->email,
+        'user'=>Auth::user()->id,
         'thread'=> $code,
         'content'=>$request->input('reply'),
       ]);
 
       $reply->likes = Like::where('item',$reply->code)->count();
-      $reply->liked = Auth::check() && count(Like::where('item',$reply->code)->where('user',Auth::user()->email)->get())>0;
-      $reply->user = User::where('email',$reply->user)->first();
+      $reply->liked = Auth::check() && count(Like::where('item',$reply->code)->where('user',Auth::user()->id)->get())>0;
+      $reply->user = User::find($reply->user);
       $reply->isOwner = Auth::check() && $reply->user->email == Auth::user()->email;
       $reply->timing = $reply->created_at->diffForHumans();
 

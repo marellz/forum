@@ -21,7 +21,7 @@ class ThreadController extends Controller
   public function create(Request $request)
   {
     $code = str_random(10);
-    $user = Auth::user()->email;
+    $user = Auth::user()->id;
 
     $thread = Thread::create([
       'code'=>$code,
@@ -44,7 +44,7 @@ class ThreadController extends Controller
     if(!$thread){
       return response()->json(['error'=>'Does not exist']);
     }
-    $thread->user = User::where('email',$thread->user)->first();
+    $thread->user = User::find($thread->user);
     $thread->timing = $thread->created_at->diffForHumans();
     $thread->likes = Like::where('item',$thread->code)->count();
     $thread->liked = Auth::check() && count(Like::where('item',$thread->code)->where('user',Auth::user()->email)->get())>0;
@@ -54,7 +54,7 @@ class ThreadController extends Controller
     foreach ($replies as $key => $reply) {
       $reply->likes = Like::where('item',$reply->code)->count();
       $reply->liked = Auth::check() && count(Like::where('item',$reply->code)->where('user',Auth::user()->email)->get())>0;
-      $reply->user = User::where('email',$reply->user)->first();
+      $reply->user = User::find($reply->user);
       $reply->isOwner = Auth::check() && $reply->user->email == Auth::user()->email;
       $reply->timing = $reply->created_at->diffForHumans();
     }
