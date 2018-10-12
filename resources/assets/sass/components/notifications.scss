@@ -1,0 +1,57 @@
+.notification-trigger{
+  position: relative;
+  >a.icon{
+    position: relative;
+    &:after{
+      $rad:20px;
+      border-radius: 50%;
+      height: $rad;
+      line-height: $rad;
+      width: $rad;
+      text-align: center;
+      top: -10px;
+      right: 0;
+      content: attr(data-notifications);
+      display: block;
+      font-size: 12px;
+      position: absolute;
+      background: $color3;
+      color: white;
+    }
+  }
+  .notifications{
+    width: 300px;
+    position: absolute;
+    @include hide;
+    right: 0;
+    .no-notifications{
+      height: 100px;
+    }
+    .container-header{
+      padding: 5px !important;
+    }
+
+    &.active{
+      @include show;
+    }
+
+    .notification-wrap{
+      .notification{
+        padding: 10px;
+        .typ{
+          &.content{
+            line-height: 30px;
+          }
+          &.time{
+            line-height: 20px;
+          }
+        }
+        &.read{
+          background: rgba($color5,.1);
+          color: rgba(black,.5);
+        }
+      }
+    }
+  }
+
+}

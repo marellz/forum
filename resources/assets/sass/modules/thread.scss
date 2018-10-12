@@ -1,0 +1,77 @@
+.thread-preview{
+  margin: 15px auto;
+  .thread-content{
+    padding: 20px;
+  }
+  .thread-stats{
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid rgba(black,.1);
+  }
+}
+
+.thread-component{
+  border-bottom: 1px solid rgba(black,.1);
+  display: flex;
+  flex-direction: row;
+  .thread-author{
+    justify-content: center;
+    padding-top: 5px;
+    flex: 0 1 70px;
+    display: flex;
+    .avatar{
+      $rad: 50px;
+      content: '';
+      display: block;
+      height: $rad;
+      width: $rad;
+      border-radius: $rad;
+      // background: rgba($color3,.2);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+  }
+  .thread-content{
+    flex: 1 1 auto;
+    .thread-content-header{
+      line-height: 50px;
+      display: flex;
+      span{
+        margin-left: auto;
+        font-size: 13px;
+        @media screen and(max-width: 480px){
+          font-size: 10px;
+        }
+      }
+    }
+    .thread-actions{
+      display: flex;
+      // line-height: 50px;
+      a,span{
+        cursor: default;
+        @include no-select;
+        &.active{
+          color:$color3;
+        }
+      }
+      a{
+        &:hover{
+          color: $color3;
+        }
+      }
+    }
+  }
+  &.primary{
+    background: rgba($color5,.1);
+  }
+}
+
+.replies{
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(black,.1);
+}
+
+.thread-reply{
+  background: rgba($color4,.1);
+}

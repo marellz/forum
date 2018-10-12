@@ -1,0 +1,37 @@
+.search{
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  .bar-holder{
+    width: 100%;
+  }
+  form{
+    display: flex;
+    justify-content:  center;
+    flex: 1 1 auto;
+    .input{
+      input{
+        width: 100%;
+        background: white;
+        border: none;
+        padding: 0 5%;
+        border-radius: 5px;
+      }
+      max-width: 600px;
+      &:before{
+        display: none;
+      }
+    }
+  }
+}
+
+.search-content{
+  background: white;
+  line-height: normal;
+  .modal-control{
+    padding: 5px;
+  }
+  form.active{
+    z-index: 1000;
+  }
+}

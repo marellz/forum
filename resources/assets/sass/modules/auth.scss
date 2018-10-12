@@ -1,0 +1,27 @@
+.modal.auth{
+  background: $color3;
+  overflow: auto;
+  .auth-card{
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(black,.1);
+    padding: 2em;
+
+    .input{
+      margin: 20px 0;
+      min-width: 320px;
+    }
+  }
+}
+
+
+@media screen and(max-width:480px){
+  .modal.auth{
+    .auth-card{
+      padding: 1em;
+      .input{
+        min-width: 250px;
+      }
+    }
+  }
+}

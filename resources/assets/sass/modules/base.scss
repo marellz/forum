@@ -1,0 +1,30 @@
+.frost{
+  background: $color2;
+  font-family: 'Open Sans',sans-serif;
+}
+
+@mixin section-padding($paddng){
+  padding-left: $paddng;
+  padding-right: $paddng;
+}
+.section{
+  &.pd-2{
+    @include section-padding(10%);
+  }
+}
+
+
+@media screen and(max-width: 768px){
+  .section{
+    &.pd-2{
+      @include section-padding(2%);
+    }
+  }
+}
+@media screen and(max-width: 480px){
+  .section{
+    &.pd-2{
+      @include section-padding(5px);
+    }
+  }
+}
