@@ -14153,7 +14153,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -14298,6 +14298,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ThreadView',
@@ -14330,6 +14337,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       axios.post('/like/' + code).then(function (res) {
         this.thread.liked = res.data.liked;
         res.data.liked ? ++this.thread.likes : --this.thread.likes;
+      }.bind(this)).catch(function (err) {
+        console.error(err);
+      });
+    },
+    followThread: function followThread(code) {
+      if (!this.hasAuth) {
+        return false;
+      }
+      axios.post('/thread/follow/' + code).then(function (res) {
+        this.thread.follows = res.data.follows;
+        res.data.follows ? ++this.thread.follow_count : --this.thread.follow_count;
       }.bind(this)).catch(function (err) {
         console.error(err);
       });
@@ -14407,6 +14425,31 @@ var render = function() {
                   "a",
                   {
                     staticClass: "icon txt n",
+                    class: _vm.thread.follows
+                      ? "ion-md-star"
+                      : "ion-md-star-outline",
+                    attrs: {
+                      title: _vm.thread.follows
+                        ? "Unfollow thread"
+                        : "Follow thread"
+                    },
+                    on: {
+                      click: function($event) {
+                        _vm.followThread(_vm.thread.code)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { staticClass: "txt" }, [
+                      _vm._v(_vm._s(_vm.thread.follow_count))
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    staticClass: "icon txt n",
                     class: _vm.thread.liked
                       ? "ion-md-heart"
                       : "ion-md-heart-empty",
@@ -14452,9 +14495,9 @@ var render = function() {
                     _c("div", { staticClass: "pd-xs-v" }, [
                       _c("p", { staticClass: "typ" }, [
                         _vm._v(
-                          "\n              " +
+                          "\n            " +
                             _vm._s(_vm.thread.content) +
-                            "\n            "
+                            "\n          "
                         )
                       ])
                     ])
@@ -14511,9 +14554,9 @@ var render = function() {
                         _c("div", { staticClass: "pd-xs-v" }, [
                           _c("p", { staticClass: "typ" }, [
                             _vm._v(
-                              "\n              " +
+                              "\n            " +
                                 _vm._s(reply.content) +
-                                "\n            "
+                                "\n          "
                             )
                           ])
                         ]),
@@ -14671,7 +14714,7 @@ var staticRenderFns = [
       _c("h1", { staticClass: "typ thin" }, [_vm._v("We have a problem.")]),
       _vm._v(" "),
       _c("p", { staticClass: "typ" }, [
-        _vm._v("\n        This thread does not exist.\n      ")
+        _vm._v("\n      This thread does not exist.\n    ")
       ])
     ])
   }

@@ -20,14 +20,12 @@ class CreateNotifiesTable extends Migration
             $table->string('code');
 
             //if thread based
-            $table->integer('from');
-            $table->integer('to');
-            $table->string('type');
-            $table->string('thread')->nullable();
-
-            // if not thread-based
-            $table->string('content')->nullable();
-            $table->string('url')->nullable();
+            $table->integer('trigger');
+            $table->integer('recipient');
+            $table->string('targetType');
+            $table->string('targetCode');
+            $table->string('targetName')->nullable();
+            $table->string('thread');
 
             // read status
             $table->boolean('read')->default(false);
