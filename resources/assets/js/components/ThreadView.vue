@@ -5,96 +5,103 @@
         <h1 class="typ title">{{thread.title}}</h1>
         <div class="container-header-actions">
           <a
+          @click="followThread(thread.code)"
+          class="icon txt n"
+          :title="thread.follows ? 'Unfollow thread': 'Follow thread'"
+          :class="thread.follows ? 'ion-md-star' : 'ion-md-star-outline'">
+          <span class="txt">{{thread.follow_count}}</span>
+        </a>
+          <a
           @click="likeThread(thread.code)"
           class="icon txt n"
           :class="thread.liked ? 'ion-md-heart' : 'ion-md-heart-empty'">
           <span class="txt">{{thread.likes}}</span>
         </a>
+    </div>
+  </div>
+
+  <div class="container-body no-pd">
+    <!-- primary reply -->
+    <div class="section thread-component primary">
+      <div class="thread-author">
+        <span class="avatar" :style="'background-image:url('+thread.user.avatar+')'"></span>
       </div>
+      <div class="thread-content">
+        <div class="thread-content-header">
+          <h3 class="typ thick">{{thread.user.name}}</h3>
+          <span class="typ s it">{{thread.timing}}</span>
+        </div>
+        <div class="pd-xs-v">
+          <p class="typ">
+            {{thread.content}}
+          </p>
+        </div>
+      </div>
+
     </div>
 
-    <div class="container-body no-pd">
-      <!-- primary reply -->
-      <div class="section thread-component primary">
-        <div class="thread-author">
-          <span class="avatar" :style="'background-image:url('+thread.user.avatar+')'"></span>
-        </div>
-        <div class="thread-content">
-          <div class="thread-content-header">
-            <h3 class="typ thick">{{thread.user.name}}</h3>
-            <span class="typ s it">{{thread.timing}}</span>
-          </div>
-          <div class="pd-xs-v">
-            <p class="typ">
-              {{thread.content}}
-            </p>
-          </div>
-        </div>
+    <!-- other replies -->
+    <div class="replies">
+      <!-- if replies > 0 -->
+      <h1 v-if="replies.length" class="icon ion-md-undo typ s">Replies</h1>
+      <!-- else -->
+      <template v-else>
+        <h1 class="typ s pd-xs c" v-if="thread.isOwner">There are no replies to this thread yet.</h1>
+        <h1 class="typ s pd-xs c" v-else>No replies. Be the first to make one.</h1>
+      </template>
+    </div>
 
+    <!-- other replies -->
+    <div v-for="(reply,index) in replies" class="section thread-component">
+      <div class="thread-author">
+        <span class="avatar" :style="'background-image:url('+reply.user.avatar+')'"></span>
+      </div>
+      <div class="thread-content">
+        <div class="thread-content-header">
+          <h3 class="typ thick">{{reply.user.name}}</h3>
+          <span class="typ s it">{{reply.timing}}</span>
+        </div>
+        <div class="pd-xs-v">
+          <p class="typ">
+            {{reply.content}}
+          </p>
+        </div>
+        <div class="thread-actions">
+          <a :title="hasAuth ? 'Like this reply' : 'You must log in to like.' " @click="likeReply(reply.code,index)" class="icon typ" :class="reply.liked ? 'ion-md-heart active': 'ion-md-heart-empty'">{{reply.likes}} <span class="txt non-mobile-only">{{reply.likes == 1 ? 'like' :'likes'}}</span></a>
+          <a v-if="reply.isOwner" @click="deleteReply(reply.code,index)" class="icon typ ion-md-trash"><span class="txt non-mobile-only">Delete</span></a>
+        </div>
       </div>
 
-      <!-- other replies -->
-      <div class="replies">
-        <!-- if replies > 0 -->
-        <h1 v-if="replies.length" class="icon ion-md-undo typ s">Replies</h1>
-        <!-- else -->
-        <template v-else>
-          <h1 class="typ s pd-xs c" v-if="thread.isOwner">There are no replies to this thread yet.</h1>
-          <h1 class="typ s pd-xs c" v-else>No replies. Be the first to make one.</h1>
-        </template>
-      </div>
+    </div>
 
-      <!-- other replies -->
-      <div v-for="(reply,index) in replies" class="section thread-component">
-        <div class="thread-author">
-          <span class="avatar" :style="'background-image:url('+reply.user.avatar+')'"></span>
-        </div>
-        <div class="thread-content">
-          <div class="thread-content-header">
-            <h3 class="typ thick">{{reply.user.name}}</h3>
-            <span class="typ s it">{{reply.timing}}</span>
+    <!-- reply form -->
+    <div class="section thread-reply" v-if="hasAuth">
+      <template v-if="canReply">
+        <form  method="post" @submit.prevent="saveReply">
+          <div class="input textarea">
+            <textarea required v-model="reply" placeholder="Write your reply here"></textarea>
           </div>
-          <div class="pd-xs-v">
-            <p class="typ">
-              {{reply.content}}
-            </p>
+          <div class="">
+            <button>Reply</button>
           </div>
-          <div class="thread-actions">
-            <a :title="hasAuth ? 'Like this reply' : 'You must log in to like.' " @click="likeReply(reply.code,index)" class="icon typ" :class="reply.liked ? 'ion-md-heart active': 'ion-md-heart-empty'">{{reply.likes}} <span class="txt non-mobile-only">{{reply.likes == 1 ? 'like' :'likes'}}</span></a>
-            <a v-if="reply.isOwner" @click="deleteReply(reply.code,index)" class="icon typ ion-md-trash"><span class="txt non-mobile-only">Delete</span></a>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- reply form -->
-      <div class="section thread-reply" v-if="hasAuth">
-        <template v-if="canReply">
-          <form  method="post" @submit.prevent="saveReply">
-            <div class="input textarea">
-              <textarea required v-model="reply" placeholder="Write your reply here"></textarea>
-            </div>
-            <div class="">
-              <button>Reply</button>
-            </div>
-          </form>
-        </template>
-      </div>
-      <div class="section thread-reply no-auth" v-else>
-        <div class="pd">
-          <h2 class="typ thin c">You must be <a href="/login" class="txt ul">signed in</a> to reply.</h2>
-        </div>
+        </form>
+      </template>
+    </div>
+    <div class="section thread-reply no-auth" v-else>
+      <div class="pd">
+        <h2 class="typ thin c">You must be <a href="/login" class="txt ul">signed in</a> to reply.</h2>
       </div>
     </div>
-  </template>
-  <template v-else>
-    <div class="pd-l">
-      <h1 class="typ thin">We have a problem.</h1>
-      <p class="typ">
-        This thread does not exist.
-      </p>
-    </div>
-  </template>
+  </div>
+</template>
+<template v-else>
+  <div class="pd-l">
+    <h1 class="typ thin">We have a problem.</h1>
+    <p class="typ">
+      This thread does not exist.
+    </p>
+  </div>
+</template>
 </div>
 
 </template>
@@ -132,6 +139,19 @@ export default {
         this.thread.liked = res.data.liked
         res.data.liked ? ++this.thread.likes : --this.thread.likes
       }.bind(this)).catch(function(err) {
+        console.error(err)
+      })
+    },
+    followThread(code){
+      if(!this.hasAuth){
+        return false;
+      }
+      axios.post('/thread/follow/'+code)
+      .then(function(res) {
+        this.thread.follows = res.data.follows
+        res.data.follows ? ++this.thread.follow_count : --this.thread.follow_count
+      }.bind(this))
+      .catch(function(err) {
         console.error(err)
       })
     },

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Thread;
+use App\ThreadFollow;
 use App\User;
 use App\Reply;
 use App\Like;
@@ -47,7 +48,9 @@ class ThreadController extends Controller
     $thread->user = User::find($thread->user);
     $thread->timing = $thread->created_at->diffForHumans();
     $thread->likes = Like::where('item',$thread->code)->count();
-    $thread->liked = Auth::check() && count(Like::where('item',$thread->code)->where('user',Auth::user()->email)->get())>0;
+    $thread->liked = Auth::check() && Like::where('item',$thread->code)->where('user',Auth::user()->id)->count()>0;
+    $thread->follows = Auth::check() && ThreadFollow::where('thread',$code)->where('user',Auth::user()->id)->count();
+    $thread->follow_count = ThreadFollow::where('thread',$code)->count();
     $thread->isOwner = Auth::check() && $thread->user->email == Auth::user()->email;
 
     $replies = Reply::where('thread',$code)->get();
@@ -63,6 +66,29 @@ class ThreadController extends Controller
 
 
     // return view('thread.view',compact(['thread','replies','isAuthenticated']));
+  }
+
+  public function follow($code)
+  {
+    $user_id = Auth::user()->id;
+    if(Thread::where('code',$code)->first()->user == $user_id){
+      //you can't follow your own thread, fam
+      return response()->json(['success'=>false,'message'=>'Thou shalt not follow their own thread.']);
+    }
+
+    $follows = ThreadFollow::where('thread',$code)->where('user',$user_id)->count()>0;
+    if($follows){
+      ThreadFollow::where('thread',$code)->where('user',$user_id)->delete();
+      $now_follows = false;
+    } else {
+      ThreadFollow::create([
+        'thread'=>$code,
+        'user'=>$user_id,
+      ]);
+      $now_follows = true;
+    }
+
+    return response()->json(['success'=>true,'follows'=>$now_follows]);
   }
 
   public function delete($code)
