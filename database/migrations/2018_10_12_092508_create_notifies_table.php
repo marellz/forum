@@ -24,8 +24,7 @@ class CreateNotifiesTable extends Migration
             $table->integer('recipient');
             $table->string('targetType');
             $table->string('targetCode');
-            $table->string('targetName')->nullable();
-            $table->string('thread');
+            $table->string('targetName')->nullable();            
 
             // read status
             $table->boolean('read')->default(false);
