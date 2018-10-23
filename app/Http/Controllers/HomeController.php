@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Thread;
 use App\Reply;
 use App\Like;
+use App\View;
 
 class HomeController extends Controller
 {
@@ -20,6 +21,7 @@ class HomeController extends Controller
     $threads = Thread::all();
     foreach ($threads as $key => $thread) {
       $thread->likes = Like::where('item',$thread->code)->count();
+      $thread->views = View::where('thread',$thread->code)->count();
       $thread->reply_count = Reply::where('thread',$thread->code)->count();
     }
     return view('welcome',compact(['threads']));

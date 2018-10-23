@@ -38,7 +38,7 @@
         </div>
         <div class="thread-stats">
           <span class="typ icon ion-md-undo">{{$thread->reply_count}} <span class="txt non-mobile-only">{{$thread->reply_count == 1 ? 'reply' : 'replies'}}</span></span>
-          <span class="typ icon ion-md-eye">12 <span class="txt non-mobile-only">views</span></span>
+          <span class="typ icon ion-md-eye">{{$thread->views}} <span class="txt non-mobile-only">views</span></span>
           <span class="typ icon ion-md-heart {{$thread->liked ? 'liked' : ''}}">{{$thread->likes}} <span class="txt non-mobile-only">{{$thread->likes == 1 ? 'like' : 'likes'}}</span></span>
         </div>
       </div>
