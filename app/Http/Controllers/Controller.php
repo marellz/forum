@@ -15,7 +15,7 @@ trait functions {
   {
     return true;
   }
-  public function notify($action,$from,$to,$type,$code,$name)
+  public function notify($action,$from,$type,$code,$name=false)
   {
     //notify
     if(!Auth::check()){
@@ -26,6 +26,7 @@ trait functions {
     if($from == $to ){
       return false;
     }
+
 
     $notification = Notify::create([
       'code'=>$notify_code,
@@ -39,6 +40,18 @@ trait functions {
 
     return $notification;
 
+  }
+
+  public function getIP()
+  {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+      $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
   }
 }
 

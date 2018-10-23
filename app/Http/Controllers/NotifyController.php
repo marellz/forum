@@ -19,7 +19,7 @@ class NotifyController extends Controller
     public function fetch()
     {
       //should fetch for current User
-      $notifications = Notify::where('to',Auth::user()->id)
+      $notifications = Notify::where('recipient',Auth::user()->id)
       ->limit(7)
       ->latest()
       ->get();

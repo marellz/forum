@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Thread;
 use App\Like;
+use App\Notify;
 
 use Auth;
 
@@ -27,11 +28,21 @@ class LikeController extends Controller
         'user'=>$user->id,
         'item'=>$code,
       ]);
+
+      //notify
+      $if_thread = Thread::where('code',$code)->count()>0;
+      $if_reply = Reply::where('code',$code)->count()>0;
+      $type = $if_thread ? 'thread' : $if_reply ? 'reply' : 'unknown';
+      $this->notify('like', $user->id, $type, $code, false);
       return response()->json(['liked'=>true]);
 
     } else {
       //delete
       $user_likes->delete();
+
+      //delete notification
+      Nofify::where('targetCode',$user_likes->first()->code)->delete();
+
       return response()->json(['liked'=>false]);
     }
 

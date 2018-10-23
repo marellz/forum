@@ -8,6 +8,7 @@ use App\ThreadFollow;
 use App\User;
 use App\Reply;
 use App\Like;
+use App\View;
 
 use Auth;
 use Carbon;
@@ -62,10 +63,35 @@ class ThreadController extends Controller
       $reply->timing = $reply->created_at->diffForHumans();
     }
 
-    return response()->json(['thread'=>$thread,'replies'=>$replies]);
+    //register view
+    $has_auth = Auth::check();
+    $view_exists = View::where('thread',$code)->where('ip',$this->getIP());
+    if($has_auth){
+      $user_id = Auth::user()->id;
+      //check if viewed
+      $view_exists = $view_exists->where('user',$user_id)->count()>0;
 
+      if(!$view_exists){
+        // register view if not
+        View::create([
+          'thread'=>$code,
+          'ip'=>$this->getIP(),
+          'user'=>$user_id
+        ]);
+      }
+    } else {
+      $view_exists = $view_exists->count()>0;
+      if(!$view_exists){
+        View::create([
+          'thread'=>$code,
+          'ip'=>$this->getIP(),
+        ]);
+      }
+    }
 
-    // return view('thread.view',compact(['thread','replies','isAuthenticated']));
+    $views = View::where('thread',$code)->count();
+
+    return response()->json(['thread'=>$thread,'replies'=>$replies,'views'=>$views]);
   }
 
   public function follow($code)
